@@ -1,4 +1,4 @@
-wg_endpoint={{ inventory_hostname }}
+wg_endpoint={{ inventory_hostname | default(ansible_default_ipv4.address) }}
 wg_ip={{ wg_ip }}
 wg_port={{ wg_port }}
 wg_clients={{ wg_clients }}
