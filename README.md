@@ -1,2 +1,76 @@
-# wireguard-genie
-WireGuard Configuration Generator
+# About
+
+WireGuard Genie is a configuration generator for [WireGuard](https://www.wireguard.com/). WireGuard is an awesome piece of software from exceptionally talented people, but their deployment approaches appear to be somewhat lacking. Manually setting up and maintaining such a "server"\* requires lot of manual labor. I made the WireGuard Genie script and the corresponding Ansible playbook to make WireGuard installation and configuration much more streamlined.
+
+\* I put that in quotes, because WireGuard actually doesn't make a distinction between a "server" and "clients", there's only "peers".
+
+# Requirements
+
+All you need is a current release of:
+
+- Fedora
+- Ubuntu
+- CentOS / AlmaLinux / RockyLinux
+- RHEL
+
+# Installation
+
+## Automatic
+
+This is the recommended installation method.
+
+**Warning:** the installer will:
+
+- update all packages on the target server to their latest versions
+- enable automatic updates
+- enable firewalld
+
+### Local
+
+1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-specific-operating-systems) on the WireGuard server.
+2. Obtain the WireGuard Genie sources:
+```
+git clone https://github.com/noobient/wireguard-genie.git
+```
+3. Run the installer playbook:
+```
+ansible-playbook ansible/wireguard.yml
+```
+
+### Remote
+
+As the WireGuard Genie installer uses [Ansible](https://www.ansible.com/), it can be done either directly on the WireGuard server or from a remote client, but for the sake of simplicity, this guide will only cover the direct installation part. If you're familiar with Ansible, and have set up your host inventory, private keys, etc. feel free to use the playbooks on remote hosts. The only thing you need to change is specify the target during the playbook run, i.e.
+
+```
+ansible-playbook ansible/wireguard.yml -e "target=your.wireguard.server.ip"
+```
+
+## Manual
+
+1. Install the `wireguard` package.
+2. Copy `src/wg-gen.sh` to `/etc/wireguard`.
+3. Set up `/etc/wireguard/wg-gen.conf` as explained in the [Use](#Use) section.
+
+# Use
+
+The default configuration should work OOTB, but you might want to adjust yours. The WireGuard Genie config file is located at `/etc/wireguard/wg-gen.conf`. The options are listed below, with mandatory ones marked with **bold**:
+
+| Key | Description | Default Value |
+|---|---|---|
+| **`wg_endpoint`** | The FQDN / IP address of your WireGuard server. Clients will connect to this address. | Your server's primary IP address |
+| **`wg_ip`** | The "virtual" IP address of the WireGuard Server on the tunnel network. Clients will be assigned adjacent IPs automatically. | 10.10.10.1 |
+| **`wg_port`** | The WireGuard server port | 44444 |
+| **`wg_clients`** | The number of allowed clients. | 5 |
+| **`wg_dns`** | The DNS server clients will use for name resolution. | 1.1.1.1 (Cloudflare) |
+| **`wg_tunnel`** | Tunnel type, can be either `full` (all client traffic goes through the server) or `split` (only tunnel traffic goes through). | split |
+| `wg_users` | Comma separated list of nick names for your users. Must be the same number as `wg_clients`. | john,jane,jules,juan,jose |
+| `wg_repo` | HTTP URL of the GitHub repo where you want to push your generated WireGuard config files. | N/A |
+| `wg_credential` | Your GitHub [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) for the repo specified in `wg_repo`. | N/A |
+
+Once you adjusted everything to your needs, you can apply the changes with:
+
+```
+/etc/wireguard/wg-gen.sh
+```
+
+You can distribute the resulting WireGuard tunnel files to your users from the `/etc/wireguard/clients.d` folder. If you set the `wg_users`, `wg_repo` and `wg_credential` options, the files will be available in your GitHub repo as well.
