@@ -4,6 +4,23 @@ WireGuard Genie is a configuration generator for [WireGuard](https://www.wiregua
 
 \* I put that in quotes, because WireGuard actually doesn't make a distinction between a "server" and "clients", there's only "peers".
 
+## Features
+
+- Automatic, persisent config generation for a set number of clients
+- Generated pre-shared keys for added security
+- QR code generation for mobile clients
+- Peer nick names
+- Config versioning in Git
+- Config deployment to GitHub and compatible hosting providers
+- Split or full tunnelling
+- firewalld integration
+
+## Limitations
+
+- Tunnel subnet is always /24
+  - Therefore maximum number of clients is 253
+- WireGuard server always uses first IP on subnet regardless of last octet in config
+
 # Requirements
 
 All you need is a current release of:
@@ -27,12 +44,12 @@ This is the recommended installation method.
 
 ### Local
 
-1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-specific-operating-systems) on the WireGuard server.
-2. Obtain the WireGuard Genie sources:
+- [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-specific-operating-systems) on the WireGuard server.
+- Obtain the WireGuard Genie sources:
 ```
 git clone --recurse-submodules https://github.com/noobient/wireguard-genie.git
 ```
-3. Run the installer playbook:
+- Run the installer playbook:
 ```
 ansible-playbook ansible/wireguard.yml
 ```
@@ -47,9 +64,12 @@ ansible-playbook ansible/wireguard.yml -e "target=your.wireguard.server.ip"
 
 ## Manual
 
-1. Install the `wireguard` package.
-2. Copy `src/wg-gen.sh` to `/etc/wireguard`.
-3. Set up `/etc/wireguard/wg-gen.conf` as explained in the [Use](#Use) section.
+- Install the following packages:
+  - wireguard
+  - qrencode
+  - git
+- Copy `src/wg-gen.sh` to `/etc/wireguard`.
+- Set up `/etc/wireguard/wg-gen.conf` as explained in the [Use](#Use) section.
 
 # Use
 
