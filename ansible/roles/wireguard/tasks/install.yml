@@ -6,3 +6,4 @@
     packages:
     - wireguard-tools
     - qrencode
+    - git
