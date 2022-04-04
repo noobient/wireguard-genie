@@ -20,6 +20,13 @@ WireGuard Genie is a configuration generator for [WireGuard](https://www.wiregua
 - Tunnel subnet is always /24
   - Therefore maximum number of clients is 253
 - WireGuard server always uses first IP on subnet regardless of last octet in config
+- Fresh installs of Fedora Server 35 on Vultr are unable to start firewalld upon first boot:
+
+```
+ ERROR: Exception DBusException: org.freedesktop.DBus.Error.AccessDenied: Request to own name refused by policy
+```
+
+In this case, either `systemctl restart dbus` or reboot the VM once.
 
 # Requirements
 
