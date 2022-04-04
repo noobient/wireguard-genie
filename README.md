@@ -30,7 +30,7 @@ This is the recommended installation method.
 1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-specific-operating-systems) on the WireGuard server.
 2. Obtain the WireGuard Genie sources:
 ```
-git clone https://github.com/noobient/wireguard-genie.git
+git clone --recurse-submodules https://github.com/noobient/wireguard-genie.git
 ```
 3. Run the installer playbook:
 ```
