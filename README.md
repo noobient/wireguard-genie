@@ -23,10 +23,10 @@ WireGuard Genie is a configuration generator for [WireGuard](https://www.wiregua
 - Fresh installs of Fedora Server 35 on Vultr are unable to start firewalld upon first boot:
 
 ```
- ERROR: Exception DBusException: org.freedesktop.DBus.Error.AccessDenied: Request to own name refused by policy
+ERROR: Exception DBusException: org.freedesktop.DBus.Error.AccessDenied: Request to own name refused by policy
 ```
 
-In this case, either `systemctl restart dbus` or reboot the VM once.
+In this case, either `systemctl restart dbus.service firewalld.service`, or reboot the VM once. firewalld will start correctly upon consecutive boots, so this is only needed on the very first boot of the VM, and is probably caused by Vultr's cloud-init procedures.
 
 # Requirements
 
