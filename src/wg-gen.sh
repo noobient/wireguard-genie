@@ -75,7 +75,15 @@ function publish_config ()
     git add -A
     date_str=$(date +%Y%m%d-%H%M%S)
     git diff-index --quiet HEAD || git commit -m "Generated config ${date_str}"
-    git push -f
+
+    # check if remotes are configured
+    do_push=0
+    git ls-remote &> /dev/null && do_push=1
+    if [ ${do_push} -eq 1 ]
+    then
+        # remote exists, push
+        git push -f
+    fi
 
     popd > /dev/null
 }
