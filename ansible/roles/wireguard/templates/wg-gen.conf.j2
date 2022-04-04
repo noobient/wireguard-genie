@@ -1,4 +1,4 @@
-wg_endpoint={{ inventory_hostname | default(ansible_default_ipv4.address) }}
+wg_endpoint={% if inventory_hostname != '127.0.0.1' %}{{ inventory_hostname }}{% else %}{{ ansible_default_ipv4.address }}{% endif %}{{''}}
 wg_ip={{ wg_ip }}
 wg_port={{ wg_port }}
 wg_clients={{ wg_clients }}
