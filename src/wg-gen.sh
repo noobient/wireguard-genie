@@ -3,6 +3,8 @@
 set -eu
 
 export wg_root='/etc/wireguard'
+export wg_client_dir="${wg_root}/clients.d"
+export wg_repo_dir="${wg_root}/repo.d"
 
 . "${wg_root}/wg-gen.conf"
 
@@ -63,13 +65,18 @@ function publish_config ()
         return
     fi
 
-    pushd "${wg_root}/repo.d" > /dev/null
+    if [ ! -d "${wg_repo_dir}" ]
+    then
+        return
+    fi
+
+    pushd "${wg_repo_dir}" > /dev/null
     git reset --hard > /dev/null
 
     for (( i=0; i<${wg_clients}; i++ ))
     do
-        \cp -f "${wg_root}/clients.d/$((i+2)).conf" "${wg_users_arr[i]}.conf"
-        \cp -f "${wg_root}/clients.d/$((i+2)).png" "${wg_users_arr[i]}.png"
+        \cp -f "${wg_client_dir}/$((i+2)).conf" "${wg_users_arr[i]}.conf"
+        \cp -f "${wg_client_dir}/$((i+2)).png" "${wg_users_arr[i]}.png"
     done
 
     git add -A
@@ -88,7 +95,7 @@ function publish_config ()
     popd > /dev/null
 }
 
-mkdir -p "${wg_root}/clients.d"
+mkdir -p "${wg_client_dir}"
 gen_keypair "${wg_root}" server
 
 cat << EOF > "${wg_root}/wg0.conf"
@@ -101,36 +108,36 @@ EOF
 
 for (( i=1; i<=${wg_clients}; i++ ))
 do
-    gen_keypair "${wg_root}/clients.d" $((i+1))
-    gen_psk "${wg_root}/clients.d" $((i+1))
+    gen_keypair "${wg_client_dir}" $((i+1))
+    gen_psk "${wg_client_dir}" $((i+1))
 
     cat << EOF >> "${wg_root}/wg0.conf"
 [Peer]
-PublicKey = $(cat "${wg_root}/clients.d/$((i+1)).pubkey")
-PresharedKey = $(cat "${wg_root}/clients.d/$((i+1)).psk")
+PublicKey = $(cat "${wg_client_dir}/$((i+1)).pubkey")
+PresharedKey = $(cat "${wg_client_dir}/$((i+1)).psk")
 AllowedIPs = ${wg_int_net}.$((i+1))/32
 EOF
 
-    cat << EOF > "${wg_root}/clients.d/$((i+1)).conf"
+    cat << EOF > "${wg_client_dir}/$((i+1)).conf"
 [Interface]
-PrivateKey = $(cat "${wg_root}/clients.d/$((i+1)).privkey")
+PrivateKey = $(cat "${wg_client_dir}/$((i+1)).privkey")
 Address = ${wg_int_net}.$((i+1))/24
 DNS = ${wg_dns}
 
 [Peer]
 PublicKey = $(cat "${wg_root}/server.pubkey")
-PresharedKey = $(cat "${wg_root}/clients.d/$((i+1)).psk")
+PresharedKey = $(cat "${wg_client_dir}/$((i+1)).psk")
 Endpoint = ${wg_endpoint}:${wg_port}
 PersistentKeepalive = 30
 EOF
 
     case ${wg_tunnel} in
         split)
-            echo "AllowedIPs = ${wg_int_net}.0/24" >> "${wg_root}/clients.d/$((i+1)).conf"
+            echo "AllowedIPs = ${wg_int_net}.0/24" >> "${wg_client_dir}/$((i+1)).conf"
             ;;
 
         full)
-            echo "AllowedIPs = 0.0.0.0/0" >> "${wg_root}/clients.d/$((i+1)).conf"
+            echo "AllowedIPs = 0.0.0.0/0" >> "${wg_client_dir}/$((i+1)).conf"
             ;;
 
         *)
@@ -139,9 +146,9 @@ EOF
 
     esac
 
-    qrencode -t PNG -r "${wg_root}/clients.d/$((i+1)).conf" -o "${wg_root}/clients.d/$((i+1)).png"
-    chmod 0600 "${wg_root}/clients.d/$((i+1)).conf"
-    chmod 0600 "${wg_root}/clients.d/$((i+1)).png"
+    qrencode -t PNG -r "${wg_client_dir}/$((i+1)).conf" -o "${wg_client_dir}/$((i+1)).png"
+    chmod 0600 "${wg_client_dir}/$((i+1)).conf"
+    chmod 0600 "${wg_client_dir}/$((i+1)).png"
 done
 
 parse_users
