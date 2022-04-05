@@ -96,6 +96,8 @@ Apply the changes with:
 /etc/wireguard/wg-gen.sh
 ```
 
+If you want automatic config versioning in Git, initialize or clone your repo in the `/etc/wireguard/repo.d` path. Make sure the `user.name` and `user.email` Git options are set, otherwise Git commits will fail. 
+
 # Use
 
 The default configuration should work OOTB, but you might want to adjust yours. The WireGuard Genie config file is located at `/etc/wireguard/wg-gen.conf`. The options are listed below, with mandatory ones marked with **bold**:
