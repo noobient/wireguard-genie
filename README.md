@@ -41,13 +41,13 @@ All you need is a current release of:
 
 ## Automatic
 
-This is the recommended installation method.
+This is the recommended installation method. **Be warned** that the installer will:
 
-**Warning:** the installer will:
+- Update all packages on the target server to their latest versions
+- Enable automatic updates
+- Enable firewalld
 
-- update all packages on the target server to their latest versions
-- enable automatic updates
-- enable firewalld
+This is to ensure that the host handling all your secure communication really is secure and up to the task. Therefore the automatic installation method is best suited for WireGuard "appliances", i.e. hosts whose sole purpose is to handle WireGuard connections, because the points above may disrupt other activities on the server.
 
 ### Local
 
@@ -66,17 +66,35 @@ ansible-playbook ansible/wireguard.yml
 As the WireGuard Genie installer uses [Ansible](https://www.ansible.com/), it can be done either directly on the WireGuard server or from a remote client, but for the sake of simplicity, this guide will only cover the direct installation part. If you're familiar with Ansible, and have set up your host inventory, private keys, etc. feel free to use the playbooks on remote hosts. The only thing you need to change is specify the target during the playbook run, i.e.
 
 ```
-ansible-playbook ansible/wireguard.yml -e "target=your.wireguard.server.ip"
+ansible-playbook ansible/wireguard.yml -e "target=YOUR.WIREGUARD.SERVER.IP"
 ```
 
 ## Manual
 
-- Install the following packages:
-  - wireguard
-  - qrencode
-  - git
-- Copy `src/wg-gen.sh` to `/etc/wireguard`.
-- Set up `/etc/wireguard/wg-gen.conf` as explained in the [Use](#Use) section.
+An example installation on Fedora:
+
+```
+dnf install wireguard-tools qrencode git
+curl https://raw.githubusercontent.com/noobient/wireguard-genie/main/src/wg-gen.sh -o /etc/wireguard/wg-gen.sh
+chmod +x /etc/wireguard/wg-gen.sh
+```
+
+Then set up `/etc/wireguard/wg-gen.conf` as explained in the [Use](#Use) section. Example:
+
+```
+wg_endpoint=YOUR.WIREGUARD.SERVER.IP
+wg_ip=10.10.10.1
+wg_port=44444
+wg_clients=5
+wg_dns=1.1.1.1
+wg_tunnel='split'
+```
+
+Apply the changes with:
+
+```
+/etc/wireguard/wg-gen.sh
+```
 
 # Use
 
