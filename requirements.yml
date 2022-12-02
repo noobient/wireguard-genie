@@ -2,3 +2,4 @@
 - src: bviktor.firewalld
 - src: bviktor.sysctl
 - src: bviktor.update
+- src: bviktor.wireguard

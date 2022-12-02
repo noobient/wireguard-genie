@@ -62,7 +62,7 @@ ansible-galaxy install --force -r requirements.yml
 ```
 - Run the installer playbook:
 ```
-ansible-playbook ansible/wireguard.yml
+ansible-playbook wireguard-genie.yml
 ```
 
 ### Remote

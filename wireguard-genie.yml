@@ -4,4 +4,4 @@
   become: yes
   roles:
   - bviktor.update
-  - wireguard
+  - bviktor.wireguard
