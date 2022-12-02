@@ -56,6 +56,10 @@ This is to ensure that the host handling all your secure communication really is
 ```
 git clone https://github.com/noobient/wireguard-genie.git
 ```
+- Enter the repo directory:
+```
+cd wireguard-genie
+```
 - Install dependencies:
 ```
 ansible-galaxy install --force -r requirements.yml
