@@ -1,3 +1,4 @@
+---
 - name: Deploy WireGuard generator config
   template:
     src: wg-gen.conf.j2
@@ -47,8 +48,8 @@
     group: root
     mode: '0664'
   loop:
-  - { section: 'user', option: 'name', value: 'wg-gen' }
-  - { section: 'user', option: 'email', value: 'wg-gen@foobar.io' }
+    - { section: 'user', option: 'name', value: 'wg-gen' }
+    - { section: 'user', option: 'email', value: 'wg-gen@foobar.io' }
 
 - name: Obtain WireGuard config repo
   git:
@@ -79,7 +80,11 @@
 
 # TODO other options https://www.cyberciti.biz/faq/centos-8-set-up-wireguard-vpn-server/
 - include_role:
-    name: sysctl
+    name: bviktor.sysctl
+  vars:
+    - file: "{{ item.file }}"
+    - option: "{{ item.option }}"
+    - value: "{{ item.value }}"
   loop:
-  - { file: '99-wireguard', option: 'net.ipv4.ip_forward', value: '1' }
-  - { file: '99-wireguard', option: 'net.ipv6.conf.all.forwarding', value: '1' }
+    - { file: '99-wireguard', option: 'net.ipv4.ip_forward', value: '1' }
+    - { file: '99-wireguard', option: 'net.ipv6.conf.all.forwarding', value: '1' }

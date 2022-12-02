@@ -54,7 +54,11 @@ This is to ensure that the host handling all your secure communication really is
 - [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-specific-operating-systems) on the WireGuard server.
 - Obtain the WireGuard Genie sources:
 ```
-git clone --recurse-submodules https://github.com/noobient/wireguard-genie.git
+git clone https://github.com/noobient/wireguard-genie.git
+```
+- Install dependencies:
+```
+ansible-galaxy install --force -r requirements.yml
 ```
 - Run the installer playbook:
 ```

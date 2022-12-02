@@ -1,6 +1,7 @@
+---
 # make sure firewalld is installed, we need it for the reload
 - include_role:
-    name: firewalld
+    name: bviktor.firewalld
 
 # we use /etc/firewalld, WG uses /lib/firewalld, causing a conflict, get rid of it
 - name: Disable stock WireGuard firewall service
@@ -16,10 +17,10 @@
 
 # this is for 'clients' reaching the 'server'
 - include_role:
-    name: firewalld
+    name: bviktor.firewalld
   vars:
-  - service: 'wireguard'
-  - port: "{{ wg_port }}/udp"
+    - service: 'wireguard'
+    - port: "{{ wg_port }}/udp"
 
 - name: Enable firewalld masquerade
   shell:
@@ -29,8 +30,8 @@
 
 # this is for 'clients' talking to each other
 - include_role:
-    name: firewalld
+    name: bviktor.firewalld
   vars:
-  - zone: 'wireguard'
-  - interface: 'wg0'
-  - fw_target: 'ACCEPT'
+    - zone: 'wireguard'
+    - interface: 'wg0'
+    - fw_target: 'ACCEPT'

@@ -1,9 +1,10 @@
+---
 - name: Install WireGuard
   package:
     name: "{{ packages }}"
     state: latest
   vars:
     packages:
-    - wireguard-tools
-    - qrencode
-    - git
+      - wireguard-tools
+      - qrencode
+      - git
