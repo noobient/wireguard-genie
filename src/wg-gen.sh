@@ -146,7 +146,7 @@ EOF
 
     esac
 
-    qrencode -t PNG -r "${wg_client_dir}/$((i+1)).conf" -o "${wg_client_dir}/$((i+1)).png"
+    cat "${wg_client_dir}/$((i+1)).conf" | qrencode -t PNG -o "${wg_client_dir}/$((i+1)).png"
     chmod 0600 "${wg_client_dir}/$((i+1)).conf"
     chmod 0600 "${wg_client_dir}/$((i+1)).png"
 done
