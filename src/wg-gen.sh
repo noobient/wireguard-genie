@@ -14,10 +14,9 @@ function gen_keypair ()
 {
     if [ ! -f "${1}/${2}.privkey" ]
     then
-        wg genkey > "${1}/${2}.privkey" 2>/dev/null
+        (umask 0077 && wg genkey > "${1}/${2}.privkey" 2>/dev/null)
     fi
 
-    chmod 0600 "${1}/${2}.privkey"
     wg pubkey < "${1}/${2}.privkey" > "${1}/${2}.pubkey"
     chmod 0644 "${1}/${2}.pubkey"
 }
@@ -26,10 +25,8 @@ function gen_psk ()
 {
     if [ ! -f "${1}/${2}.psk" ]
     then
-        wg genpsk > "${1}/${2}.psk"
+        (umask 0077 && wg genpsk > "${1}/${2}.psk")
     fi
-
-    chmod 0600 "${1}/${2}.psk"
 }
 
 function parse_users ()
@@ -105,6 +102,8 @@ Address = ${wg_int_net}.1/24
 ListenPort = ${wg_port}
 
 EOF
+
+chmod 0600 "${wg_root}/wg0.conf"
 
 for (( i=1; i<=${wg_clients}; i++ ))
 do
